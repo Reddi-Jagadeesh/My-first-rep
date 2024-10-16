@@ -1,0 +1,78 @@
+
+1) nth highest salary of an employee?
+=====================================
+with rownum:
+------------
+
+select min(sal)
+from (select distinct(sal)
+from employee
+order by sal desc) 
+where rownum <= n;
+
+without rownum:
+---------------
+
+select *
+from employee e1
+where (n-1) = (select count(distinct(sal))
+from employee e2
+where e2.sal > e1.sal);
+
+2) nth lowest salary of an employee?
+====================================
+with rownum:
+------------
+
+select max(sal)
+from (select distinct(sal)
+from employee
+order by sal asc)
+where rownum <= n;
+
+without rownum:
+---------------
+
+select *
+from employee e1
+where (n-1) = (select count(distinct(sal))
+from employee e2
+where e2.sal < e1.sal);
+
+
+2) Max & Min salary from each department?
+=========================================
+
+select did,max(sal),min(sal)
+from employee
+group by did;
+
+3) Delete duplicate rows from table?
+====================================
+
+approach 1:
+-----------
+delete from employee where rowid not in ( select min(rowid) from employee groupby eid,ename );
+
+approach 2:
+-----------
+delete from employee e1 where e1.rowid > ( select min(e1.rowid) from employee e2 where e1.empid=e2.empid );
+
+4) Last inserted record in table?
+=================================
+
+select * from employee where rowid in (select max(rowid) from employee);
+
+5) Even & Odd rows in table?
+============================
+Even:
+-----
+select * from ( select eid,ename,rownum 
+                from employee
+                order by id ) where mod(rownum,2)=0;
+Odd:
+----
+select * from ( select eid,ename,rownum 
+                from employee
+                order by id ) where mod(rownum,2)=1;
+
